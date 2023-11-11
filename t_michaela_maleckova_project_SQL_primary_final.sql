@@ -61,6 +61,4 @@ DROP INDEX IF EXISTS prum_mzda ON t_michaela_maleckova_project_SQL_primary_final
 DROP INDEX IF EXISTS hodnota_kc ON t_michaela_maleckova_project_SQL_primary_final;
 
 
--- test
-
 
