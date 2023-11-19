@@ -1,5 +1,9 @@
 -- Soubor se skripty pro vytvoření pohledu a tabulek
 
+-- -----------------------------------------------------------------------------------------------------------------
+-- První tabulka
+-- -----------------------------------------------------------------------------------------------------------------
+
 DROP TABLE IF EXISTS t_michaela_maleckova_project_SQL_primary_table2;
 
 -- create table t_michaela_maleckova_project_SQL_primary_table1 as
@@ -46,19 +50,25 @@ SELECT DISTINCT payroll_year FROM t_michaela_maleckova_project_sql_primary_final
 ORDER BY payroll_year ;
 
 -- -----------------------------------------------------------------------------------------------------------------
+-- Druhá tabulka
+-- -----------------------------------------------------------------------------------------------------------------
 
-CREATE INDEX payroll_year ON t_michaela_maleckova_project_SQL_primary_final(payroll_year);
-
-CREATE INDEX prum_mzda ON t_michaela_maleckova_project_SQL_primary_final(prum_mzda);
-
-CREATE INDEX hodnota_kc ON t_michaela_maleckova_project_SQL_primary_final(hodnota_kc);
-
-
-DROP INDEX IF EXISTS payroll_year ON t_michaela_maleckova_project_SQL_primary_final;
-
-DROP INDEX IF EXISTS prum_mzda ON t_michaela_maleckova_project_SQL_primary_final;
-
-DROP INDEX IF EXISTS hodnota_kc ON t_michaela_maleckova_project_SQL_primary_final;
-
-
+-- CREATE TABLE t_michaela_maleckova_project_SQL_secondary_final as
+SELECT 
+	mm.payroll_year ,
+	mm.prum_mzda ,
+	mm.measure_year ,
+	'potraviny' ,
+	avg(avg_hodnota_kc) AS avg_per_year,
+	e.GDP,
+	e.population ,
+	e.gini ,
+	e.taxes
+FROM t_michaela_maleckova_project_SQL_primary_final	AS mm
+JOIN economies AS e 
+	ON mm.payroll_year = e.year
+	AND e.country = ('Czech Republic')
+GROUP BY mm.payroll_year
+HAVING avg(avg_hodnota_kc)
+ORDER BY payroll_year;
 
