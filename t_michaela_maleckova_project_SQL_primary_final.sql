@@ -49,14 +49,17 @@ CREATE TABLE t_michaela_maleckova_project_SQL_primary_final AS
 SELECT DISTINCT payroll_year FROM t_michaela_maleckova_project_sql_primary_final AS tmmpspt 
 ORDER BY payroll_year ;
 
+SELECT * FROM t_michaela_maleckova_project_sql_primary_final AS tmmpspf ;
+
 -- -----------------------------------------------------------------------------------------------------------------
 -- Druhá tabulka
 -- -----------------------------------------------------------------------------------------------------------------
+DROP TABLE IF EXISTS t_michaela_maleckova_project_SQL_secondary_final;
 
 -- CREATE TABLE t_michaela_maleckova_project_SQL_secondary_final as
 SELECT 
 	mm.payroll_year ,
-	mm.prum_mzda ,
+	avg(mm.prum_mzda) AS prum_mzda ,
 	mm.measure_year ,
 	'potraviny' ,
 	avg(avg_hodnota_kc) AS avg_per_year,
@@ -69,6 +72,6 @@ JOIN economies AS e
 	ON mm.payroll_year = e.year
 	AND e.country = ('Czech Republic')
 GROUP BY mm.payroll_year
-HAVING avg(avg_hodnota_kc)
+HAVING avg(avg_hodnota_kc) AND avg(mm.prum_mzda)
 ORDER BY payroll_year;
 

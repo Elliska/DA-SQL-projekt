@@ -111,18 +111,8 @@ ORDER BY payroll_year asc, polozka desc;
 
 SELECT
 	payroll_year ,
-	-- prum_mzda, -- v roce 2007 je asi chyba
-	round( ((prum_mzda - LAG(prum_mzda, 1) OVER (ORDER BY payroll_year)) / LAG(prum_mzda, 1) OVER (ORDER BY payroll_year) *100), 1) AS percent_mzda ,
-	-- measure_year,
-	-- potraviny,
-	-- avg_per_year,
-	-- LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) AS prev_year_m ,
-	round( ((avg_per_year - LAG(avg_per_year, 1) OVER (ORDER BY payroll_year)) / LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) *100), 1) AS percent_kc ,
-	-- GDP,
-	-- LAG(GDP, 1) OVER (ORDER BY payroll_year) AS prev_year ,
-	round( ((GDP - LAG(GDP, 1) OVER (ORDER BY payroll_year))/ LAG(GDP, 1) OVER (ORDER BY payroll_year)*100) , 1) AS percent_gdp
-	-- population,
-	-- gini,
-	-- taxes
+	round( ((prum_mzda - LAG(prum_mzda, 1) OVER (ORDER BY payroll_year)) / LAG(prum_mzda, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_mzda ,
+	round( ((avg_per_year - LAG(avg_per_year, 1) OVER (ORDER BY payroll_year)) / LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_kc_produkt ,
+	round( ((GDP - LAG(GDP, 1) OVER (ORDER BY payroll_year))/ LAG(GDP, 1) OVER (ORDER BY payroll_year)*100) , 1) AS mezirocni_procento_gdp
 FROM t_michaela_maleckova_project_sql_secondary_final AS tmmpspf ;
 
