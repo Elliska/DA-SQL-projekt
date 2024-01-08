@@ -58,7 +58,7 @@ SELECT
 	p1.product, 
 	REPLACE(p1.hodnota_2007, '.', ',') AS hodnota_2007, 
 	REPLACE(p2.hodnota_2017, '.', ',') AS hodnota_2017,
-	REPLACE(( ROUND(((p2.hodnota_2017 - p1.hodnota_2007) / p1.hodnota_2007 * 100),2) ),'.', ',') AS percentage
+	REPLACE((ROUND( ((p2.hodnota_2017 - p1.hodnota_2007) / p1.hodnota_2007 * 100),2) ),'.', ',') AS percentage
 FROM product_2007 p1
 JOIN product_2017 p2 ON p1.product = p2.product
 GROUP BY product
@@ -90,7 +90,7 @@ WITH vypocet AS (
 		polozka ,
 		avg_hodnota_kc ,
 		LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year) AS prev_year_avg ,
-		ROUND(((avg_hodnota_kc - LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)) / LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)*100),1) AS procenta
+		ROUND( ((avg_hodnota_kc - LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)) / LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)*100),1) AS procenta
 	FROM souhrn AS s
 )
 SELECT 
@@ -115,6 +115,4 @@ SELECT
 	ROUND( ((avg_per_year - LAG(avg_per_year, 1) OVER (ORDER BY payroll_year)) / LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_kc_produkt ,
 	ROUND( ((GDP - LAG(GDP, 1) OVER (ORDER BY payroll_year)) / LAG(GDP, 1) OVER (ORDER BY payroll_year)*100) , 1) AS mezirocni_procento_gdp
 FROM t_michaela_maleckova_project_sql_secondary_final AS tmmpspf ;
-
--- zde je extra mezera za round záměrně, protože 3 závorky za sebou už nejsem schopná přečíst
 
