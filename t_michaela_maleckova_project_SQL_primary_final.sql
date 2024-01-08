@@ -25,7 +25,7 @@ SELECT
 	name AS product,
 	price_value,
 	price_unit ,
-	round(avg(value),1) AS avg_hodnota_kc
+	round(AVG(value),1) AS avg_hodnota_kc
 FROM czechia_price AS cp 
 JOIN czechia_price_category AS cpc
 	ON cp.category_code = cpc.code
@@ -59,10 +59,10 @@ DROP TABLE IF EXISTS t_michaela_maleckova_project_SQL_secondary_final;
 -- CREATE TABLE t_michaela_maleckova_project_SQL_secondary_final as
 SELECT 
 	mm.payroll_year ,
-	avg(mm.prum_mzda) AS prum_mzda ,
+	AVG(mm.prum_mzda) AS prum_mzda ,
 	mm.measure_year ,
 	'potraviny' ,
-	avg(avg_hodnota_kc) AS avg_per_year,
+	AVG(avg_hodnota_kc) AS avg_per_year,
 	e.GDP,
 	e.population ,
 	e.gini ,
@@ -72,6 +72,9 @@ JOIN economies AS e
 	ON mm.payroll_year = e.year
 	AND e.country = ('Czech Republic')
 GROUP BY mm.payroll_year
-HAVING avg(avg_hodnota_kc) AND avg(mm.prum_mzda)
+HAVING AVG(avg_hodnota_kc) AND AVG(mm.prum_mzda)
 ORDER BY payroll_year;
 
+-- odstranění mezitabulek
+DROP TABLE IF EXISTS t_michaela_maleckova_project_sql_primary_table1, t_michaela_maleckova_project_sql_primary_table2 ;
+DROP VIEW  t_michaela_maleckova_project_SQL_primary_view;

@@ -17,8 +17,8 @@ SELECT
 	product,
 	payroll_year,
 	avg_hodnota_kc ,
-	round(avg(prum_mzda),1) AS avg_mzda,
-	round(prum_mzda/avg_hodnota_kc) AS pocet_produktu,
+	ROUND(AVG(prum_mzda),1) AS avg_mzda,
+	ROUND(prum_mzda/avg_hodnota_kc) AS pocet_produktu,
 	cp.price_unit AS jednotka
 FROM t_michaela_maleckova_project_sql_primary_final AS cp
 WHERE payroll_year IN (2007,2017) AND product IN ('Mléko polotučné pasterované', 'Chléb konzumní kmínový')
@@ -32,7 +32,7 @@ SELECT
 	name,
 	prum_mzda AS prum_mzda ,
 	avg_hodnota_kc AS cena_produktu,
-	round(prum_mzda/avg_hodnota_kc) AS pocet_produktu , -- počet kg/l které je možné si z platu pořídit
+	ROUND(prum_mzda/avg_hodnota_kc) AS pocet_produktu , -- počet kg/l které je možné si z platu pořídit
 	cp.price_unit AS jednotka
 FROM t_michaela_maleckova_project_sql_primary_final AS cp
 WHERE payroll_year IN (2007,2017)  AND product IN ('Mléko polotučné pasterované', 'Chléb konzumní kmínový')
@@ -58,7 +58,7 @@ SELECT
 	p1.product, 
 	REPLACE(p1.hodnota_2007, '.', ',') AS hodnota_2007, 
 	REPLACE(p2.hodnota_2017, '.', ',') AS hodnota_2017,
-	replace(( round(((p2.hodnota_2017 - p1.hodnota_2007) / p1.hodnota_2007 * 100),2) ),'.', ',') AS percentage
+	REPLACE(( ROUND(((p2.hodnota_2017 - p1.hodnota_2007) / p1.hodnota_2007 * 100),2) ),'.', ',') AS percentage
 FROM product_2007 p1
 JOIN product_2017 p2 ON p1.product = p2.product
 GROUP BY product
@@ -71,7 +71,7 @@ WITH vypocet AS (
 		SELECT 
 			payroll_year ,
 			'potraviny' AS polozka ,
-			avg_hodnota_kc
+			AVG(avg_hodnota_kc) AS avg_hodnota_kc
 		FROM t_michaela_maleckova_project_sql_primary_final AS cp
 		GROUP BY payroll_year
 		-- 
@@ -80,7 +80,7 @@ WITH vypocet AS (
 		SELECT
 			payroll_year ,
 			'platy',
-			avg(prum_mzda) AS avg_mzda
+			AVG(prum_mzda) AS avg_mzda
 		FROM t_michaela_maleckova_project_SQL_primary_final
 		GROUP BY payroll_year
 		ORDER BY polozka, payroll_year	
@@ -90,7 +90,7 @@ WITH vypocet AS (
 		polozka ,
 		avg_hodnota_kc ,
 		LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year) AS prev_year_avg ,
-		round(((avg_hodnota_kc  - LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year))/LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)*100),1) AS procenta
+		ROUND(((avg_hodnota_kc - LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)) / LAG(avg_hodnota_kc, 1) OVER (PARTITION BY polozka ORDER BY payroll_year)*100),1) AS procenta
 	FROM souhrn AS s
 )
 SELECT 
@@ -111,8 +111,10 @@ ORDER BY payroll_year asc, polozka desc;
 
 SELECT
 	payroll_year ,
-	round( ((prum_mzda - LAG(prum_mzda, 1) OVER (ORDER BY payroll_year)) / LAG(prum_mzda, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_mzda ,
-	round( ((avg_per_year - LAG(avg_per_year, 1) OVER (ORDER BY payroll_year)) / LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_kc_produkt ,
-	round( ((GDP - LAG(GDP, 1) OVER (ORDER BY payroll_year))/ LAG(GDP, 1) OVER (ORDER BY payroll_year)*100) , 1) AS mezirocni_procento_gdp
+	ROUND( ((prum_mzda - LAG(prum_mzda, 1) OVER (ORDER BY payroll_year)) / LAG(prum_mzda, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_mzda ,
+	ROUND( ((avg_per_year - LAG(avg_per_year, 1) OVER (ORDER BY payroll_year)) / LAG(avg_per_year, 1) OVER (ORDER BY payroll_year) *100), 1) AS mezirocni_procento_kc_produkt ,
+	ROUND( ((GDP - LAG(GDP, 1) OVER (ORDER BY payroll_year)) / LAG(GDP, 1) OVER (ORDER BY payroll_year)*100) , 1) AS mezirocni_procento_gdp
 FROM t_michaela_maleckova_project_sql_secondary_final AS tmmpspf ;
+
+-- zde je extra mezera za round záměrně, protože 3 závorky za sebou už nejsem schopná přečíst
 
